@@ -3,11 +3,7 @@ class UsersController < ApplicationController
   before_action :set_user, only: %i[show update destroy]
 
   def index
-    if current_user[:role] == 'admin'
-      @users = User.all
-    else
-      @users = current_user
-    end
+    @users = policy_scope(User)
 
     render json: @users
   end
