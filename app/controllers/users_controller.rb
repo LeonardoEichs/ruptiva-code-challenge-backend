@@ -1,21 +1,22 @@
-class Api::V1::UsersController < Api::V1::ApiController
+class UsersController < ApplicationController
+  before_action :authenticate_user!
   before_action :set_user, only: %i[show update destroy]
 
   def index
-    if current_api_v1_user[:role] == 'admin'
+    if current_user[:role] == 'admin'
       @users = User.all
     else
-      @users = current_api_v1_user
+      @users = current_user
     end
 
     render json: @users
   end
 
   def show
-    if current_api_v1_user[:role] == 'admin'
+    if current_user[:role] == 'admin'
       render json: @user
     else
-      if @user == current_api_v1_user
+      if @user == current_user
         render json: @user
       else
         render json: {msg: "You do not have permission for this action"}
@@ -34,14 +35,14 @@ class Api::V1::UsersController < Api::V1::ApiController
   end
 
   def update
-    if current_api_v1_user[:role] == 'admin'
+    if current_user[:role] == 'admin'
       if @user.update(user_params)
         render json: @user
       else
         render json: @user.errors, status: :unprocessable_entity
       end
     else
-      if @user == current_api_v1_user
+      if @user == current_user
         if @user.update(user_params)
           render json: @user
         else
@@ -54,14 +55,14 @@ class Api::V1::UsersController < Api::V1::ApiController
   end
 
   def destroy
-    if current_api_v1_user[:role] == 'admin'
+    if current_user[:role] == 'admin'
       if @user.update({deleted: true})
         render json: @user
       else
         render json: @user.errors, status: :unprocessable_entity
       end
     else
-      if @user == current_api_v1_user
+      if @user == current_user
         if @user.update({deleted: true})
           render json: @user
         else
