@@ -1,16 +1,26 @@
-# frozen_string_literal: true
-
 class Api::V1::UsersController < Api::V1::ApiController
   before_action :set_user, only: %i[show update destroy]
 
   def index
-    @users = User.all
+    if current_api_v1_user[:role] == 'admin'
+      @users = User.all
+    else
+      @users = current_api_v1_user
+    end
 
     render json: @users
   end
 
   def show
-    render json: @user
+    if current_api_v1_user[:role] == 'admin'
+      render json: @user
+    else
+      if @user == current_api_v1_user
+        render json: @user
+      else
+        render json: {msg: "You do not have permission for this action"}
+      end
+    end
   end
 
   def create
@@ -24,20 +34,44 @@ class Api::V1::UsersController < Api::V1::ApiController
   end
 
   def update
-    if @user.update(user_params)
-      render json: @user
+    if current_api_v1_user[:role] == 'admin'
+      if @user.update(user_params)
+        render json: @user
+      else
+        render json: @user.errors, status: :unprocessable_entity
+      end
     else
-      render json: @user.errors, status: :unprocessable_entity
+      if @user == current_api_v1_user
+        if @user.update(user_params)
+          render json: @user
+        else
+          render json: @user.errors, status: :unprocessable_entity
+        end
+      else
+        render json: {msg: "You do not have permission for this action"}
+      end
     end
   end
 
   def destroy
-    # @user.destroy
-    if @user.update({deleted: true})
-        render json: { msg: 'User deleted with success' }.to_json
-    else
+    if current_api_v1_user[:role] == 'admin'
+      if @user.update({deleted: true})
+        render json: @user
+      else
         render json: @user.errors, status: :unprocessable_entity
-    end  
+      end
+    else
+      if @user == current_api_v1_user
+        if @user.update({deleted: true})
+          render json: @user
+        else
+          render json: @user.errors, status: :unprocessable_entity
+        end
+      else
+        render json: {msg: "You do not have permission for this action"}
+      end
+    end
+    # @user.destroy
   end
 
     private
