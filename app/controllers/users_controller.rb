@@ -1,6 +1,7 @@
 class UsersController < ApplicationController
   before_action :authenticate_user!
   before_action :set_user, only: %i[show update destroy]
+  before_action :set_user_scoped, only: %i[show update destroy]
 
   def index
     @users = policy_scope(User)
@@ -9,15 +10,7 @@ class UsersController < ApplicationController
   end
 
   def show
-    if current_user[:role] == 'admin'
-      render json: @user
-    else
-      if @user == current_user
-        render json: @user
-      else
-        render json: {msg: "You do not have permission for this action"}
-      end
-    end
+    render json: @user_scoped
   end
 
   def create
@@ -31,44 +24,19 @@ class UsersController < ApplicationController
   end
 
   def update
-    if current_user[:role] == 'admin'
-      if @user.update(user_params)
-        render json: @user
-      else
-        render json: @user.errors, status: :unprocessable_entity
-      end
+    if @user_scoped.update(user_params)
+      render json: @user_scoped
     else
-      if @user == current_user
-        if @user.update(user_params)
-          render json: @user
-        else
-          render json: @user.errors, status: :unprocessable_entity
-        end
-      else
-        render json: {msg: "You do not have permission for this action"}
-      end
+      render json: @user_scoped.errors, status: :unprocessable_entity
     end
   end
 
   def destroy
-    if current_user[:role] == 'admin'
-      if @user.update({deleted: true})
-        render json: @user
-      else
-        render json: @user.errors, status: :unprocessable_entity
-      end
+    if @user_scoped.update({deleted: true})
+      render json: @user_scoped
     else
-      if @user == current_user
-        if @user.update({deleted: true})
-          render json: @user
-        else
-          render json: @user.errors, status: :unprocessable_entity
-        end
-      else
-        render json: {msg: "You do not have permission for this action"}
-      end
+      render json: @user_scoped.errors, status: :unprocessable_entity
     end
-    # @user.destroy
   end
 
     private
@@ -79,6 +47,14 @@ class UsersController < ApplicationController
              status: :bad_request
     end
   end
+
+  def set_user_scoped
+    unless (@user_scoped = policy_scope(User).find_by(id: params[:id]))
+      render json: { error: 'Could not find user' }.to_json,
+             status: :bad_request
+    end
+  end
+
 
   def user_params
     params.require(:user).permit(:first_name, :last_name, :email, :password, :password_confirmation, :role)
