@@ -65,7 +65,17 @@ RSpec.describe 'User requests' do
         end
     end
 
-    describe 'GET /users/:id' do
+    describe 'GET /users/:id without authentication' do
+        before do
+            user = User.create(first_name: 'Teste', last_name: 'Teste', email: 'test@test.com', password: "password")
+            get "/users/#{user.id}"
+        end
+        it 'returns an unauthorized code' do
+            expect(response).to have_http_status(401)
+        end
+    end
+
+    describe 'GET /users/:id with user role' do
         before do
             user = User.create(first_name: 'Teste', last_name: 'Teste', email: 'test@test.com', password: "password")
             auth_header = user.create_new_auth_token
@@ -102,6 +112,54 @@ RSpec.describe 'User requests' do
             )
         end
     end
+
+    describe 'GET /users/:id with admin role' do
+        before do
+            user = User.create(first_name: 'Teste', last_name: 'Teste', email: 'test@test.com', password: "password", role: 'admin')
+            auth_header = user.create_new_auth_token
+            get "/users/#{user.id}", params: {}, headers: auth_header
+        end
+        it 'returns an success code' do
+            expect(response).to have_http_status(:success)
+        end
+        it "JSON body response contains expected users attributes" do
+            json = JSON.parse(response.body)
+            expect(json.keys).to include(
+                "id", 
+                "first_name", 
+                "last_name",
+                "email",
+                "role"
+                )
+        end
+    end
+
+    describe "GET /users/:id to an id other than admin's own" do
+        before do
+            user = User.create(first_name: 'Teste', last_name: 'Teste', email: 'test@test.com', password: "password", role: 'admin')
+            jon_doe = User.create(first_name: 'Jon', last_name: 'Doe', email: 'jon@test.com', password: "password")
+            auth_header = user.create_new_auth_token
+            get "/users/#{jon_doe.id}", params: {}, headers: auth_header
+        end
+        it 'returns an success code' do
+            expect(response).to have_http_status(:success)
+        end
+        it "JSON body response contains expected users attributes" do
+            json = JSON.parse(response.body)
+            expect(json.keys).to include(
+                "id", 
+                "first_name", 
+                "last_name",
+                "email",
+                "role"
+                )
+        end
+        it "JSON body response first_name should be Jon" do
+            json = JSON.parse(response.body)
+            expect(json["first_name"]).to eq("Jon")
+        end
+    end
+
 
 #    context "GET #show" do
 #    it "renders the :show view" do 
