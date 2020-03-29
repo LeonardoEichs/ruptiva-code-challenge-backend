@@ -504,7 +504,43 @@ RSpec.describe 'User requests' do
                 expect(json["deleted"]).to eq(true)
             end
         end
-
     end
-    
+
+    describe 'POST /users to create a new user' do
+        before do
+            post "/users", params: {first_name: "Jon", last_name: "Doe", email: "jon@email.com", password: "12345"}, headers: {}
+            json = JSON.parse(response.body)
+            @created_user_id = json["data"]["id"]
+        end
+        it 'returns a success code' do
+            expect(response).to have_http_status(:success)
+        end
+        it "JSON body response contains expected users attributes" do
+            json = JSON.parse(response.body)
+            expect(json["data"].keys).to include(
+                "id", 
+                "first_name", 
+                "last_name",
+                "email",
+                "role"
+                )
+        end
+        it "JSON body response first_name should be Jon and last_name should be Doe" do
+            json = JSON.parse(response.body)
+            expect(json["data"]["first_name"]).to eq("Jon")
+            expect(json["data"]["last_name"]).to eq("Doe")
+        end
+        describe 'GET /users/:id to Jon Doe to check if it has the correct values' do
+            it "JSON body response first_name should be Jon and last_name Doe" do
+                user = User.create(first_name: 'Teste', last_name: 'Teste', email: 'test@test.com', password: "password", role: 'admin')
+                auth_header = user.create_new_auth_token
+                get "/users/#{@created_user_id}", params: {}, headers: auth_header
+                json = JSON.parse(response.body)
+                expect(json["first_name"]).to eq("Jon")
+                expect(json["last_name"]).to eq("Doe")
+            end
+        end
+    end
+
+
 end
