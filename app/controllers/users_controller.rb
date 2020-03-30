@@ -6,36 +6,36 @@ class UsersController < ApplicationController
   def index
     @users = policy_scope(User)
 
-    render json: @users
+    render json: json_render_scope(@users)
   end
 
   def show
-    render json: @user_scoped
+    render json: json_render_scope(@user_scoped)
   end
 
   def create
     @user = User.new(user_params)
 
     if @user.save
-      render json: @user, status: :created
+      render json: json_render_scope(@user), status: :created
     else
-      render json: @user.errors, status: :unprocessable_entity
+      render json: json_render_scope(@user).errors, status: :unprocessable_entity
     end
   end
 
   def update
     if @user_scoped.update(user_params)
-      render json: @user_scoped
+      render json: json_render_scope(@user_scoped)
     else
-      render json: @user_scoped.errors, status: :unprocessable_entity
+      render json: json_render_scope(@user_scoped).errors, status: :unprocessable_entity
     end
   end
 
   def destroy
     if @user_scoped.update({deleted: true})
-      render json: @user_scoped
+      render json: json_render_scope(@user_scoped)
     else
-      render json: @user_scoped.errors, status: :unprocessable_entity
+      render json: json_render_scope(@user_scoped).errors, status: :unprocessable_entity
     end
   end
 
@@ -54,6 +54,15 @@ class UsersController < ApplicationController
              status: :bad_request
     end
   end
+
+  def json_render_scope(complete_user)
+    if current_user.admin?
+      complete_user.as_json
+    else 
+      complete_user.as_json(only: [:id, :first_name, :last_name, :email, :role])
+    end
+  end
+
 
 
   def user_params
