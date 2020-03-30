@@ -1,0 +1,13 @@
+Documentation:
+  Enabled: false
+AllCops:
+  Exclude:
+    - "db/**/*"
+    - "config/**/*"
+    - "libs/**/*"
+    - "app/mailers/**/*"
+    - "app/policies/**/*"
+    - "bin/**/*"
+    - "spec/**/*"
+    - "Gemfile"
+    - "Rakefile"
