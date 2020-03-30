@@ -19,7 +19,7 @@ As `Gems` utilizadas são:
 - [pundit](https://github.com/varvet/pundit)
 - [rspec](https://github.com/rspec/rspec-rails)
 
-## Pré-requisitos
+## Preparação do ambiente
 
 ### Postgres
 
@@ -101,6 +101,12 @@ O dado do seed é:
 
 O projeto consiste de uma RESTful JSON API em Ruby on Rails com CRUD de usuários, permissões e testes.
 
+#### Permissões
+
+- Usuários não autenticados não podem acessar qualquer informação
+- Usuários `admin` tem acesso a todos registros
+- Usuários `user` tem acesso somente ao seu próprio registro
+
 #### Usuários
 
 Suas funcionalidades consistem em:
@@ -122,19 +128,25 @@ da seguinte maneira:
 ```
 
 O campo `first_name` e `last_name` representam o primeiro e segundo nome do usuário, respectivamente.
+
 O campo `email` representa o e-mail do usuário e **será utilizado para fazer o sign in do usuário**.
+
 O campo `password` representa a senha do usuário. Quando a senha for armazenada no banco de dados,
 o `Devise` irá antes criptografar a senha passada pelo usuário e irá armazenar a senha criptografada no
 campo `encrypted_password` do banco de dados. Isso garante maior segurança, evitando que as senhas dos
 usuários possam ser vistas pelo acesso no banco de dados.
+
 Esse é o comportamente padrão do `Devise`, caso quiséssemos quebrar esse protocolo de segurança e
 permit que as senhas sejam vistas, seria necessário dar um override na função de criptografia do `devise`.
+
 O campo `password_confirmation` deriva do comportamento de validação especificado no model de `User`, portanto
 ele não existe como um campo do banco de dados. É necessário preencher esse campo com o mesmo valor que o
 passado para `password`.
+
 O campo `role` especifica o papel do usuário, sendo eles `[user, admin]`. Por padrão, o usuário criado
 possui `role: "user"`, portanto se esse campo não for explicitamente definido, o usuário será criado com
 o comportamento padrão.
+
 O `role` como `user` limita os dados acessíveis pelo usuário, permitindo que ele tenha acesso apenas a certos
 campos e que só possa visualizar/alterar a si mesmo. O `admin`, por outro lado, pode ver todos os dados
 dos usuários, assim como visualizar/alterar tanto a si mesmo como qualquer outro usuário cadastrado.
@@ -173,6 +185,7 @@ Os usuários são listados por meio de um `GET /users`.
 
 Caso esteja cadastrado como um usuário com `role` como `user` os dados acessíveis pelo usuário são limitados,
 permitindo que ele tenha acesso apenas a certos campos e que só possa visualizar a si mesmo.
+
 Caso esteja como `admin`, por outro lado, pode ver todos os dados dos usuários, assim como visualizar todos
 os usuários cadastrados (inclusive os marcados como deletados).
 
@@ -182,6 +195,7 @@ Os usuários são listados por meio de um `GET /users/:id`.
 
 Caso esteja cadastrado como um usuário com `role` como `user` os dados acessíveis pelo usuário são limitados,
 permitindo que ele tenha acesso apenas a certos campos e que só possa visualizar a si mesmo.
+
 Caso esteja como `admin`, por outro lado, pode ver todos os dados dos usuários, assim como visualizar todos
 os usuários cadastrados (inclusive os marcados como deletados).
 
@@ -200,6 +214,7 @@ Ex: mudar `first_name`
 
 Caso esteja cadastrado como um usuário com `role` como `user` os dados acessíveis pelo usuário são limitados,
 permitindo que ele tenha acesso apenas a certos campos e que só possa atualizar a si mesmo.
+
 Dados que podem ser alterados por `user`:
 
 ```
@@ -212,6 +227,7 @@ Dados que podem ser alterados por `user`:
 
 Caso esteja como `admin`, por outro lado, pode atualizar mais dados dos usuários, assim como atualizar todos
 os usuários cadastrados.
+
 Dados que podem ser alterados por `admin`:
 
 ```
@@ -233,13 +249,16 @@ Os usuários são deletados por meio de um `DEL /users/:id`.
 
 Caso esteja cadastrado como um usuário com `role` como `user` só é permitido
 que ele delete a si mesmo.
+
 Caso esteja como `admin`, por outro lado, pode deletar qualquer um dos
 usuários cadastrados.
 
 O comportamento do soft-delete é marcar o campo `deleted` como `true` e apagar o `token`
 de acesso do usuário deletado.
+
 Dessa forma, não será mais possível fazer nenhuma ação utilizando o usuário que foi
 deletado, nem mesmo fazer um novo `sign in` passando os dados do usuário deletado.
+
 Os dados do usuário deletado se mantém no banco de dados e este pode ser reativado por meio
 de um `admin` atualizando a opção deleted como `false` e, após isso, fazer um novo `sign in`.
 
