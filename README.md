@@ -3,7 +3,8 @@
 ## Requisitos
 
 Essa API é a resolução do teste de desenvolvimento Back-end proposto pela Ruptiva.
-Para ver os requisitos do projeto: [Ruptiva - Code Challenge Back-end](https://github.com/ruptiva/Ruptiva-Code-Challenge-Back-end)
+Para ver os requisitos do projeto:
+[Ruptiva - Code Challenge Back-end](https://github.com/ruptiva/Ruptiva-Code-Challenge-Back-end)
 
 ## Requisitos Técnicos
 
@@ -102,8 +103,8 @@ O dado do seed é:
 
 Os testes devem ser executados utilizando [rspec](https://github.com/rspec/rspec-rails) e compreendem:
 
-- Testes de Model: [spec/model](https://github.com/LeonardoEichs/ruptiva-code-challenge-backend/tree/master/spec/models)
-- Testes de Request: [spec/requests](https://github.com/LeonardoEichs/ruptiva-code-challenge-backend/tree/master/spec/requests)
+- Testes de Model: [spec/model](/spec/models)
+- Testes de Request: [spec/requests](/spec/requests)
 
 Para executar os testes com `rspec` use:
 
@@ -115,8 +116,8 @@ bundle exec rspec # Para executar todos os testes
 
 Se todos os testes passarem, a execução do comando deve resultar em algo similar à imagem abaixo:
 
-![Execução dos testes](https://github.com/LeonardoEichs/ruptiva-code-challenge-backend/tree/master/readme-images/test-run.png)
+![Execução dos testes](/readme-images/test-run.png?raw=true)
 
 Caso algum teste falhar, o `rspec` irá mostrar um aviso similar ao da imagem abaixo (apenas para ilustração):
 
-![Execução dos testes com uma falha](https://github.com/LeonardoEichs/ruptiva-code-challenge-backend/tree/master/readme-images/failed-test-run.png)
+![Execução dos testes com uma falha](/readme-images/failed-test-run.png?raw=true)
