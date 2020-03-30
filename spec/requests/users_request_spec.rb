@@ -307,9 +307,6 @@ RSpec.describe 'User requests' do
             auth_header = user.create_new_auth_token
             put "/users/#{user.id}", params: {user: {deleted: true}}, headers: auth_header
         end
-        it 'returns an unprocessable entity code' do
-            expect(response).to have_http_status(:unprocessable_entity)
-        end
         describe 'GET /users/:id to user to check if it still is the same' do
             it "JSON body response deleted should still be false" do
                 admin = User.create(first_name: 'Admin', last_name: 'Teste', email: 'admin@test.com', password: "password", password_confirmation: "password", role: 'admin')
@@ -327,9 +324,6 @@ RSpec.describe 'User requests' do
             @created_user_id = user.id
             auth_header = user.create_new_auth_token
             put "/users/#{user.id}", params: {user: {role: "admin"}}, headers: auth_header
-        end
-        it 'returns an unprocessable entity code' do
-            expect(response).to have_http_status(:unprocessable_entity)
         end
         describe 'GET /users/:id to user to check if it still is the same' do
             it "JSON body response role should still be user" do
