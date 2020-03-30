@@ -11,4 +11,10 @@ class User < ActiveRecord::Base
   validates :encrypted_password, :presence => true
   validates :password_confirmation, :presence => true, :on => :create
   validates_confirmation_of :password
+
+  def active_for_authentication?  
+    super && !deleted
+  end  
+
+
 end

@@ -31,3 +31,6 @@
 
 en:
   hello: "Hello world"
+  devise_token_auth:
+    sessions:
+      not_confirmed: "This account has been deleted"
