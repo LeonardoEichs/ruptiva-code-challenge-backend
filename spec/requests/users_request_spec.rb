@@ -13,7 +13,7 @@ RSpec.describe 'User requests' do
 
     describe 'GET /users with user role' do
         before do
-            user = User.create(first_name: 'Teste', last_name: 'Teste', email: 'test@test.com', password: "password")
+            user = User.create(first_name: 'Teste', last_name: 'Teste', email: 'test@test.com', password: "password", password_confirmation: "password")
             auth_header = user.create_new_auth_token
             get '/users', params: {}, headers: auth_header
         end
@@ -38,11 +38,11 @@ RSpec.describe 'User requests' do
 
     describe 'GET /users with admin role' do
         before do
-            user = User.create(first_name: 'Admin', last_name: 'Admin', email: 'admin@test.com', password: "password", role: 'admin')
-            User.create(first_name: 'Teste1', last_name: 'Teste1', email: 'test1@test.com', password: "password")
-            User.create(first_name: 'Teste2', last_name: 'Teste2', email: 'test2@test.com', password: "password")
-            User.create(first_name: 'Teste3', last_name: 'Teste3', email: 'test3@test.com', password: "password")
-            User.create(first_name: 'Teste4', last_name: 'Teste4', email: 'test4@test.com', password: "password")
+            user = User.create(first_name: 'Admin', last_name: 'Admin', email: 'admin@test.com', password: "password", password_confirmation: "password", role: 'admin')
+            User.create(first_name: 'Teste1', last_name: 'Teste1', email: 'test1@test.com', password: "password", password_confirmation: "password")
+            User.create(first_name: 'Teste2', last_name: 'Teste2', email: 'test2@test.com', password: "password", password_confirmation: "password")
+            User.create(first_name: 'Teste3', last_name: 'Teste3', email: 'test3@test.com', password: "password", password_confirmation: "password")
+            User.create(first_name: 'Teste4', last_name: 'Teste4', email: 'test4@test.com', password: "password", password_confirmation: "password")
             auth_header = user.create_new_auth_token
             get '/users', params: {}, headers: auth_header
         end
@@ -67,7 +67,7 @@ RSpec.describe 'User requests' do
 
     describe 'GET /users/:id without authentication' do
         before do
-            user = User.create(first_name: 'Teste', last_name: 'Teste', email: 'test@test.com', password: "password")
+            user = User.create(first_name: 'Teste', last_name: 'Teste', email: 'test@test.com', password: "password", password_confirmation: "password")
             get "/users/#{user.id}"
         end
         it 'returns an unauthorized code' do
@@ -77,7 +77,7 @@ RSpec.describe 'User requests' do
 
     describe 'GET /users/:id with user role' do
         before do
-            user = User.create(first_name: 'Teste', last_name: 'Teste', email: 'test@test.com', password: "password")
+            user = User.create(first_name: 'Teste', last_name: 'Teste', email: 'test@test.com', password: "password", password_confirmation: "password")
             auth_header = user.create_new_auth_token
             get "/users/#{user.id}", params: {}, headers: auth_header
         end
@@ -102,8 +102,8 @@ RSpec.describe 'User requests' do
 
     describe 'GET /users/:id to non-authorized id' do
         before do
-            user = User.create(first_name: 'Teste', last_name: 'Teste', email: 'test@test.com', password: "password")
-            jon_doe = User.create(first_name: 'Jon', last_name: 'Doe', email: 'jon@test.com', password: "password")
+            user = User.create(first_name: 'Teste', last_name: 'Teste', email: 'test@test.com', password: "password", password_confirmation: "password")
+            jon_doe = User.create(first_name: 'Jon', last_name: 'Doe', email: 'jon@test.com', password: "password", password_confirmation: "password")
             auth_header = user.create_new_auth_token
             get "/users/#{jon_doe.id}", params: {}, headers: auth_header
         end
@@ -120,7 +120,7 @@ RSpec.describe 'User requests' do
 
     describe 'GET /users/:id with admin role' do
         before do
-            user = User.create(first_name: 'Teste', last_name: 'Teste', email: 'test@test.com', password: "password", role: 'admin')
+            user = User.create(first_name: 'Teste', last_name: 'Teste', email: 'test@test.com', password: "password", password_confirmation: "password", role: 'admin')
             auth_header = user.create_new_auth_token
             get "/users/#{user.id}", params: {}, headers: auth_header
         end
@@ -145,8 +145,8 @@ RSpec.describe 'User requests' do
 
     describe "GET /users/:id to an id other than admin's own" do
         before do
-            user = User.create(first_name: 'Teste', last_name: 'Teste', email: 'test@test.com', password: "password", role: 'admin')
-            jon_doe = User.create(first_name: 'Jon', last_name: 'Doe', email: 'jon@test.com', password: "password")
+            user = User.create(first_name: 'Teste', last_name: 'Teste', email: 'test@test.com', password: "password", password_confirmation: "password", role: 'admin')
+            jon_doe = User.create(first_name: 'Jon', last_name: 'Doe', email: 'jon@test.com', password: "password", password_confirmation: "password")
             auth_header = user.create_new_auth_token
             get "/users/#{jon_doe.id}", params: {}, headers: auth_header
         end
@@ -171,7 +171,7 @@ RSpec.describe 'User requests' do
 
     describe 'GET /users/:id without authentication' do
         before do
-            user = User.create(first_name: 'Teste', last_name: 'Teste', email: 'test@test.com', password: "password")
+            user = User.create(first_name: 'Teste', last_name: 'Teste', email: 'test@test.com', password: "password", password_confirmation: "password")
             get "/users/#{user.id}"
         end
         it 'returns an unauthorized code' do
@@ -181,7 +181,7 @@ RSpec.describe 'User requests' do
 
     describe 'GET /users/:id with user role' do
         before do
-            user = User.create(first_name: 'Teste', last_name: 'Teste', email: 'test@test.com', password: "password")
+            user = User.create(first_name: 'Teste', last_name: 'Teste', email: 'test@test.com', password: "password", password_confirmation: "password")
             auth_header = user.create_new_auth_token
             get "/users/#{user.id}", params: {}, headers: auth_header
         end
@@ -202,7 +202,7 @@ RSpec.describe 'User requests' do
 
     describe 'GET /users/:id to non-authorized id' do
         before do
-            user = User.create(first_name: 'Teste', last_name: 'Teste', email: 'test@test.com', password: "password")
+            user = User.create(first_name: 'Teste', last_name: 'Teste', email: 'test@test.com', password: "password", password_confirmation: "password")
             auth_header = user.create_new_auth_token
             get "/users/#{user.id + 1}", params: {}, headers: auth_header
         end
@@ -219,7 +219,7 @@ RSpec.describe 'User requests' do
 
     describe 'GET /users/:id with admin role' do
         before do
-            user = User.create(first_name: 'Teste', last_name: 'Teste', email: 'test@test.com', password: "password", role: 'admin')
+            user = User.create(first_name: 'Teste', last_name: 'Teste', email: 'test@test.com', password: "password", password_confirmation: "password", role: 'admin')
             auth_header = user.create_new_auth_token
             get "/users/#{user.id}", params: {}, headers: auth_header
         end
@@ -240,8 +240,8 @@ RSpec.describe 'User requests' do
 
     describe "GET /users/:id to an id other than admin's own" do
         before do
-            user = User.create(first_name: 'Teste', last_name: 'Teste', email: 'test@test.com', password: "password", role: 'admin')
-            jon_doe = User.create(first_name: 'Jon', last_name: 'Doe', email: 'jon@test.com', password: "password")
+            user = User.create(first_name: 'Teste', last_name: 'Teste', email: 'test@test.com', password: "password", password_confirmation: "password", role: 'admin')
+            jon_doe = User.create(first_name: 'Jon', last_name: 'Doe', email: 'jon@test.com', password: "password", password_confirmation: "password")
             auth_header = user.create_new_auth_token
             get "/users/#{jon_doe.id}", params: {}, headers: auth_header
         end
@@ -266,7 +266,7 @@ RSpec.describe 'User requests' do
 
     describe 'PUT /users/:id without authentication' do
         before do
-            user = User.create(first_name: 'Teste', last_name: 'Teste', email: 'test@test.com', password: "password")
+            user = User.create(first_name: 'Teste', last_name: 'Teste', email: 'test@test.com', password: "password", password_confirmation: "password")
             put "/users/#{user.id}"
         end
         it 'returns an unauthorized code' do
@@ -276,7 +276,7 @@ RSpec.describe 'User requests' do
 
     describe 'PUT /users/:id with user role' do
         before do
-            user = User.create(first_name: 'Teste', last_name: 'Teste', email: 'test@test.com', password: "password")
+            user = User.create(first_name: 'Teste', last_name: 'Teste', email: 'test@test.com', password: "password", password_confirmation: "password")
             auth_header = user.create_new_auth_token
             put "/users/#{user.id}", params: {user: {first_name: "Jon", last_name: "Doe"}}, headers: auth_header
         end
@@ -302,8 +302,8 @@ RSpec.describe 'User requests' do
 
     describe 'PUT /users/:id user role to non-authorized id' do
         before do
-            user = User.create(first_name: 'Teste', last_name: 'Teste', email: 'test@test.com', password: "password")
-            @jon_doe = User.create(first_name: 'Jon', last_name: 'Doe', email: 'jon@test.com', password: "password")
+            user = User.create(first_name: 'Teste', last_name: 'Teste', email: 'test@test.com', password: "password", password_confirmation: "password")
+            @jon_doe = User.create(first_name: 'Jon', last_name: 'Doe', email: 'jon@test.com', password: "password", password_confirmation: "password")
             auth_header = user.create_new_auth_token
             put "/users/#{@jon_doe.id}", params: {user: {first_name: "Jane"}}, headers: auth_header
         end
@@ -328,7 +328,7 @@ RSpec.describe 'User requests' do
 
     describe 'PUT /users/:id with admin role' do
         before do
-            user = User.create(first_name: 'Teste', last_name: 'Teste', email: 'test@test.com', password: "password", role: 'admin')
+            user = User.create(first_name: 'Teste', last_name: 'Teste', email: 'test@test.com', password: "password", password_confirmation: "password", role: 'admin')
             auth_header = user.create_new_auth_token
             put "/users/#{user.id}", params: {user: {first_name: "Jon", last_name: "Doe"}}, headers: auth_header
         end
@@ -354,8 +354,8 @@ RSpec.describe 'User requests' do
 
     describe "PUT /users/:id to an id other than admin's own" do
         before do
-            user = User.create(first_name: 'Teste', last_name: 'Teste', email: 'test@test.com', password: "password", role: 'admin')
-            jon_doe = User.create(first_name: 'Jon', last_name: 'Doe', email: 'jon@test.com', password: "password")
+            user = User.create(first_name: 'Teste', last_name: 'Teste', email: 'test@test.com', password: "password", password_confirmation: "password", role: 'admin')
+            jon_doe = User.create(first_name: 'Jon', last_name: 'Doe', email: 'jon@test.com', password: "password", password_confirmation: "password")
             auth_header = user.create_new_auth_token
             put "/users/#{jon_doe.id}", params: {user: {first_name: "Jane"}}, headers: auth_header
         end
@@ -380,7 +380,7 @@ RSpec.describe 'User requests' do
 
     describe 'DEL /users/:id without authentication' do
         before do
-            user = User.create(first_name: 'Teste', last_name: 'Teste', email: 'test@test.com', password: "password")
+            user = User.create(first_name: 'Teste', last_name: 'Teste', email: 'test@test.com', password: "password", password_confirmation: "password")
             delete "/users/#{user.id}"
         end
         it 'returns an unauthorized code' do
@@ -390,7 +390,7 @@ RSpec.describe 'User requests' do
 
     describe 'DEL /users/:id with user role' do
         before do
-            @user = User.create(first_name: 'Teste', last_name: 'Teste', email: 'test@test.com', password: "password")
+            @user = User.create(first_name: 'Teste', last_name: 'Teste', email: 'test@test.com', password: "password", password_confirmation: "password")
             auth_header = @user.create_new_auth_token
             delete "/users/#{@user.id}", params: {}, headers: auth_header
         end
@@ -415,8 +415,8 @@ RSpec.describe 'User requests' do
 
     describe 'DEL /users/:id user role to non-authorized id' do
         before do
-            user = User.create(first_name: 'Teste', last_name: 'Teste', email: 'test@test.com', password: "password")
-            @jon_doe = User.create(first_name: 'Jon', last_name: 'Doe', email: 'jon@test.com', password: "password")
+            user = User.create(first_name: 'Teste', last_name: 'Teste', email: 'test@test.com', password: "password", password_confirmation: "password")
+            @jon_doe = User.create(first_name: 'Jon', last_name: 'Doe', email: 'jon@test.com', password: "password", password_confirmation: "password")
             auth_header = user.create_new_auth_token
             delete "/users/#{@jon_doe.id}", params: {}, headers: auth_header
         end
@@ -441,7 +441,7 @@ RSpec.describe 'User requests' do
 
     describe 'DEL /users/:id with admin role' do
         before do
-            @user = User.create(first_name: 'Teste', last_name: 'Teste', email: 'test@test.com', password: "password", role: 'admin')
+            @user = User.create(first_name: 'Teste', last_name: 'Teste', email: 'test@test.com', password: "password", password_confirmation: "password", role: 'admin')
             @auth_header = @user.create_new_auth_token
             delete "/users/#{@user.id}", params: {}, headers: @auth_header
         end
@@ -474,8 +474,8 @@ RSpec.describe 'User requests' do
 
     describe "DEL /users/:id to an id other than admin's own" do
         before do
-            user = User.create(first_name: 'Teste', last_name: 'Teste', email: 'test@test.com', password: "password", role: 'admin')
-            @jon_doe = User.create(first_name: 'Jon', last_name: 'Doe', email: 'jon@test.com', password: "password")
+            user = User.create(first_name: 'Teste', last_name: 'Teste', email: 'test@test.com', password: "password", password_confirmation: "password", role: 'admin')
+            @jon_doe = User.create(first_name: 'Jon', last_name: 'Doe', email: 'jon@test.com', password: "password", password_confirmation: "password")
             auth_header = user.create_new_auth_token
             delete "/users/#{@jon_doe.id}", params: {}, headers: auth_header
         end
@@ -508,7 +508,7 @@ RSpec.describe 'User requests' do
 
     describe 'POST /users to create a new user' do
         before do
-            post "/users", params: {first_name: "Jon", last_name: "Doe", email: "jon@email.com", password: "12345"}, headers: {}
+            post "/users", params: {first_name: "Jon", last_name: "Doe", email: "jon@email.com", password: "12345", password_confirmation: "12345"}, headers: {}
             json = JSON.parse(response.body)
             @created_user_id = json["data"]["id"]
         end
@@ -532,7 +532,7 @@ RSpec.describe 'User requests' do
         end
         describe 'GET /users/:id to Jon Doe to check if it has the correct values' do
             it "JSON body response first_name should be Jon and last_name Doe" do
-                user = User.create(first_name: 'Teste', last_name: 'Teste', email: 'test@test.com', password: "password", role: 'admin')
+                user = User.create(first_name: 'Teste', last_name: 'Teste', email: 'test@test.com', password: "password", password_confirmation: "password", role: 'admin')
                 auth_header = user.create_new_auth_token
                 get "/users/#{@created_user_id}", params: {}, headers: auth_header
                 json = JSON.parse(response.body)
@@ -544,8 +544,8 @@ RSpec.describe 'User requests' do
 
     describe 'POST /users try to create an new user with an already signed up email' do
         before do
-            post "/users", params: {first_name: "Teste", last_name: "Teste", email: "teste@email.com", password: "12345"}, headers: {}
-            post "/users", params: {first_name: "Teste2", last_name: "Teste2", email: "teste@email.com", password: "12345"}, headers: {}
+            post "/users", params: {first_name: "Teste", last_name: "Teste", email: "teste@email.com", password: "12345", password_confirmation: "12345"}, headers: {}
+            post "/users", params: {first_name: "Teste2", last_name: "Teste2", email: "teste@email.com", password: "12345", password_confirmation: "12345"}, headers: {}
         end
         it 'returns an unprocessable entity code' do
             expect(response).to have_http_status(:unprocessable_entity)
@@ -554,7 +554,33 @@ RSpec.describe 'User requests' do
             json = JSON.parse(response.body)
             expect(json["errors"]["full_messages"][0]).to eq("Email has already been taken")
         end
+    end
 
+
+    describe 'POST /users try to create an new user without password confirmation' do
+        before do
+            post "/users", params: {first_name: "Teste", last_name: "Teste", email: "teste@email.com", password: "12345"}, headers: {}
+        end
+        it 'returns an unprocessable entity code' do
+            expect(response).to have_http_status(:unprocessable_entity)
+        end
+        it "JSON body response error message should tell that it needs password confirmation" do
+            json = JSON.parse(response.body)
+            expect(json["errors"]["full_messages"][0]).to eq("Password confirmation can't be blank")
+        end
+    end
+
+    describe 'POST /users try to create an new user with wrong password confirmation' do
+        before do
+            post "/users", params: {first_name: "Teste", last_name: "Teste", email: "teste@email.com", password: "12345", password_confirmation: "123456789"}, headers: {}
+        end
+        it 'returns an unprocessable entity code' do
+            expect(response).to have_http_status(:unprocessable_entity)
+        end
+        it "JSON body response error message should tell that password confirmation does not match password" do
+            json = JSON.parse(response.body)
+            expect(json["errors"]["full_messages"][0]).to eq("Password confirmation doesn't match Password")
+        end
     end
 
 
