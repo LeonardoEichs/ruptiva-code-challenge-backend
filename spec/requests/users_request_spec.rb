@@ -542,5 +542,20 @@ RSpec.describe 'User requests' do
         end
     end
 
+    describe 'POST /users try to create an new user with an already signed up email' do
+        before do
+            post "/users", params: {first_name: "Teste", last_name: "Teste", email: "teste@email.com", password: "12345"}, headers: {}
+            post "/users", params: {first_name: "Teste2", last_name: "Teste2", email: "teste@email.com", password: "12345"}, headers: {}
+        end
+        it 'returns an unprocessable entity code' do
+            expect(response).to have_http_status(:unprocessable_entity)
+        end
+        it "JSON body response error message should tell that email has already been taken" do
+            json = JSON.parse(response.body)
+            expect(json["errors"]["full_messages"][0]).to eq("Email has already been taken")
+        end
+
+    end
+
 
 end
