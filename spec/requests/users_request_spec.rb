@@ -390,9 +390,10 @@ RSpec.describe 'User requests' do
 
     describe 'DEL /users/:id with user role' do
         before do
-            @user = User.create(first_name: 'Teste', last_name: 'Teste', email: 'test@test.com', password: "password", password_confirmation: "password")
-            auth_header = @user.create_new_auth_token
-            delete "/users/#{@user.id}", params: {}, headers: auth_header
+            user = User.create(first_name: 'Teste', last_name: 'Teste', email: 'test@test.com', password: "password", password_confirmation: "password")
+            @created_user_id = user.id
+            auth_header = user.create_new_auth_token
+            delete "/users/#{user.id}", params: {}, headers: auth_header
         end
         it 'returns a success code' do
             expect(response).to have_http_status(:success)
@@ -408,6 +409,9 @@ RSpec.describe 'User requests' do
                 )
         end
         it "user has deleted attribute as true" do
+            admin = User.create(first_name: 'Admin', last_name: 'Teste', email: 'admin@test.com', password: "password", password_confirmation: "password", role: 'admin')
+            auth_header = admin.create_new_auth_token
+            get "/users/#{@created_user_id}", params: {}, headers: auth_header
             json = JSON.parse(response.body)
             expect(json["deleted"]).to eq(true)
         end
@@ -431,7 +435,8 @@ RSpec.describe 'User requests' do
         end
         describe 'GET /users/:id to Jon Doe to check if it still is not deleted' do
             it "JSON body response deleted should be false" do
-                auth_header = @jon_doe.create_new_auth_token
+                admin = User.create(first_name: 'Admin', last_name: 'Teste', email: 'admin@test.com', password: "password", password_confirmation: "password", role: 'admin')
+                auth_header = admin.create_new_auth_token    
                 get "/users/#{@jon_doe.id}", params: {}, headers: auth_header
                 json = JSON.parse(response.body)
                 expect(json["deleted"]).to eq(false)
@@ -498,7 +503,8 @@ RSpec.describe 'User requests' do
         end
         describe 'GET /users/:id to Jon Doe to check if it still is not deleted' do
             it "JSON body response deleted should be true" do
-                auth_header = @jon_doe.create_new_auth_token
+                admin = User.create(first_name: 'Admin', last_name: 'Teste', email: 'admin@test.com', password: "password", password_confirmation: "password", role: 'admin')
+                auth_header = admin.create_new_auth_token    
                 get "/users/#{@jon_doe.id}", params: {}, headers: auth_header
                 json = JSON.parse(response.body)
                 expect(json["deleted"]).to eq(true)
