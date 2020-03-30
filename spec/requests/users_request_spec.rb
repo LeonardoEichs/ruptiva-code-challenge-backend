@@ -436,13 +436,7 @@ RSpec.describe 'User requests' do
         end
         it "JSON body response contains expected users attributes" do
             json = JSON.parse(response.body)
-            expect(json.keys).to include(
-                "id", 
-                "first_name", 
-                "last_name",
-                "email",
-                "role"
-                )
+            expect(json["msg"]).to eq("User deleted!")
         end
         it "user has deleted attribute as true" do
             admin = User.create(first_name: 'Admin', last_name: 'Teste', email: 'admin@test.com', password: "password", password_confirmation: "password", role: 'admin')
@@ -483,29 +477,21 @@ RSpec.describe 'User requests' do
     describe 'DEL /users/:id with admin role' do
         before do
             @user = User.create(first_name: 'Teste', last_name: 'Teste', email: 'test@test.com', password: "password", password_confirmation: "password", role: 'admin')
-            @auth_header = @user.create_new_auth_token
-            delete "/users/#{@user.id}", params: {}, headers: @auth_header
+            auth_header = @user.create_new_auth_token
+            delete "/users/#{@user.id}", params: {}, headers: auth_header
         end
         it 'returns a success code' do
             expect(response).to have_http_status(:success)
         end
         it "JSON body response contains expected users attributes" do
             json = JSON.parse(response.body)
-            expect(json.keys).to include(
-                "id", 
-                "first_name", 
-                "last_name",
-                "email",
-                "role"
-                )
-        end
-        it "user has deleted attribute as true" do
-            json = JSON.parse(response.body)
-            expect(json["deleted"]).to eq(true)
+            expect(json["msg"]).to eq("User deleted!")
         end
         describe 'GET /users/:id to user to check if it is deleted' do
             it "JSON body response deleted should be true" do
-                get "/users/#{@user.id}", params: {}, headers: @auth_header
+                admin = User.create(first_name: 'Admin', last_name: 'Teste', email: 'admin@test.com', password: "password", password_confirmation: "password", role: 'admin')
+                auth_header = admin.create_new_auth_token    
+                get "/users/#{@user.id}", params: {}, headers: auth_header
                 json = JSON.parse(response.body)
                 expect(json["deleted"]).to eq(true)
             end
