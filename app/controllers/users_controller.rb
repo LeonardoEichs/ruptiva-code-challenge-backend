@@ -25,6 +25,10 @@ class UsersController < ApplicationController
 
   def update
     if @user_scoped.update(user_params)
+      if user_params["deleted"] == true
+        @user_scoped.tokens = nil
+        @user_scoped.save
+      end  
       render json: json_render_scope(@user_scoped)
     else
       render json: json_render_scope(@user_scoped).errors, status: :unprocessable_entity
@@ -33,14 +37,11 @@ class UsersController < ApplicationController
 
   def destroy
     if @user_scoped.update({deleted: true})
+    @user_scoped.tokens = nil
+    @user_scoped.save
       if @user_scoped.id == current_user.id
-        current_user.tokens = nil
-        current_user.save
-        sign_out current_user
         render json: {msg: "User deleted!"}
       else
-        @user_scoped.tokens = nil
-        @user_scoped.save
         render json: json_render_scope(@user_scoped)
       end
     else
@@ -74,7 +75,7 @@ class UsersController < ApplicationController
 
   def user_params
     if(current_user.admin?)
-      params.require(:user).permit(:id, :provider, :uid, :first_name, :last_name, :email, :role, :created_at, :updated_at)
+      params.require(:user).permit(:id, :provider, :uid, :first_name, :last_name, :email, :role, :deleted, :created_at, :updated_at)
     else
       params.require(:user).permit(:first_name, :last_name, :email)
     end
