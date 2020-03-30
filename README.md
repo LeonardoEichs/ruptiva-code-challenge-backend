@@ -183,26 +183,36 @@ Os campos importantes desse `Header` são:
 
 Os usuários são listados por meio de um `GET /users`.
 
+![GET /users](/readme-images/list_request.png?raw=true)
+
 Caso esteja cadastrado como um usuário com `role` como `user` os dados acessíveis pelo usuário são limitados,
 permitindo que ele tenha acesso apenas a certos campos e que só possa visualizar a si mesmo.
 
 Caso esteja como `admin`, por outro lado, pode ver todos os dados dos usuários, assim como visualizar todos
 os usuários cadastrados (inclusive os marcados como deletados).
+
+![GET /users Result](/readme-images/result.png?raw=true)
 
 - Permitir visualização de usuário
 
 Os usuários são listados por meio de um `GET /users/:id`.
 
+![GET /users/:id](/readme-images/show_request.png?raw=true)
+
 Caso esteja cadastrado como um usuário com `role` como `user` os dados acessíveis pelo usuário são limitados,
 permitindo que ele tenha acesso apenas a certos campos e que só possa visualizar a si mesmo.
 
 Caso esteja como `admin`, por outro lado, pode ver todos os dados dos usuários, assim como visualizar todos
 os usuários cadastrados (inclusive os marcados como deletados).
 
+![GET /users/:id Result](/readme-images/show_result.png?raw=true)
+
 - Permitir update de usuários
 
 Os usuários são atualizado por meio de um `PUT /users/:id`, tendo os dados do usuário a serem atualizados
 como parâmetros no corpo da requisição da seguinte maneira:
+
+![PUT /users/:id](/readme-images/put_request.png?raw=true)
 
 Ex: mudar `first_name`
 
@@ -211,6 +221,8 @@ Ex: mudar `first_name`
 	"first_name": "Bob"
 }
 ```
+
+![PUT /users/:id Result](/readme-images/put_result.png?raw=true)
 
 Caso esteja cadastrado como um usuário com `role` como `user` os dados acessíveis pelo usuário são limitados,
 permitindo que ele tenha acesso apenas a certos campos e que só possa atualizar a si mesmo.
@@ -247,17 +259,23 @@ Dados que podem ser alterados por `admin`:
 
 Os usuários são deletados por meio de um `DEL /users/:id`.
 
+![DEL /users/:id](/readme-images/delete_request.png?raw=true)
+
 Caso esteja cadastrado como um usuário com `role` como `user` só é permitido
 que ele delete a si mesmo.
 
 Caso esteja como `admin`, por outro lado, pode deletar qualquer um dos
 usuários cadastrados.
 
+![DEL /users/:id Result](/readme-images/delete_result.png?raw=true)
+
 O comportamento do soft-delete é marcar o campo `deleted` como `true` e apagar o `token`
 de acesso do usuário deletado.
 
 Dessa forma, não será mais possível fazer nenhuma ação utilizando o usuário que foi
 deletado, nem mesmo fazer um novo `sign in` passando os dados do usuário deletado.
+
+![Sign in deleted](/readme-images/sign_in_deleted.png?raw=true)
 
 Os dados do usuário deletado se mantém no banco de dados e este pode ser reativado por meio
 de um `admin` atualizando a opção deleted como `false` e, após isso, fazer um novo `sign in`.
