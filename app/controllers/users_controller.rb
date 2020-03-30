@@ -84,10 +84,8 @@ class UsersController < ApplicationController
       params.require(:user).permit(
         :id,
         :provider,
-        :uid,
         :first_name,
         :last_name,
-        :email,
         :role,
         :deleted,
         :created_at,
