@@ -300,6 +300,48 @@ RSpec.describe 'User requests' do
         end
     end
 
+    describe 'PUT /users/:id with user role try to change attribute that he has no access' do
+        before do
+            user = User.create(first_name: 'Teste', last_name: 'Teste', email: 'test@test.com', password: "password", password_confirmation: "password")
+            @created_user_id = user.id
+            auth_header = user.create_new_auth_token
+            put "/users/#{user.id}", params: {user: {deleted: true}}, headers: auth_header
+        end
+        it 'returns an unprocessable entity code' do
+            expect(response).to have_http_status(:unprocessable_entity)
+        end
+        describe 'GET /users/:id to user to check if it still is the same' do
+            it "JSON body response deleted should still be false" do
+                admin = User.create(first_name: 'Admin', last_name: 'Teste', email: 'admin@test.com', password: "password", password_confirmation: "password", role: 'admin')
+                auth_header = admin.create_new_auth_token
+                get "/users/#{@created_user_id}", params: {}, headers: auth_header
+                json = JSON.parse(response.body)
+                expect(json["deleted"]).to eq(false)
+            end
+        end
+    end
+
+    describe 'PUT /users/:id with user role try to change attribute that he has no access' do
+        before do
+            user = User.create(first_name: 'Teste', last_name: 'Teste', email: 'test@test.com', password: "password", password_confirmation: "password")
+            @created_user_id = user.id
+            auth_header = user.create_new_auth_token
+            put "/users/#{user.id}", params: {user: {role: "admin"}}, headers: auth_header
+        end
+        it 'returns an unprocessable entity code' do
+            expect(response).to have_http_status(:unprocessable_entity)
+        end
+        describe 'GET /users/:id to user to check if it still is the same' do
+            it "JSON body response role should still be user" do
+                admin = User.create(first_name: 'Admin', last_name: 'Teste', email: 'admin@test.com', password: "password", password_confirmation: "password", role: 'admin')
+                auth_header = admin.create_new_auth_token
+                get "/users/#{@created_user_id}", params: {}, headers: auth_header
+                json = JSON.parse(response.body)
+                expect(json["role"]).to eq("user")
+            end
+        end
+    end
+
     describe 'PUT /users/:id user role to non-authorized id' do
         before do
             user = User.create(first_name: 'Teste', last_name: 'Teste', email: 'test@test.com', password: "password", password_confirmation: "password")
