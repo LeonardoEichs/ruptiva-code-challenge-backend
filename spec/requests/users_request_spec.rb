@@ -447,6 +447,26 @@ RSpec.describe 'User requests' do
         end
     end
 
+    describe "DEL /users/:id with user role and try to use it's authentication" do
+        before do
+            user = User.create(first_name: 'Teste', last_name: 'Teste', email: 'test@test.com', password: "password", password_confirmation: "password")
+            @auth_header = user.create_new_auth_token
+            delete "/users/#{user.id}", params: {}, headers: @auth_header
+        end
+        it 'returns a success code' do
+            expect(response).to have_http_status(:success)
+        end
+        it "JSON body response contains expected users attributes" do
+            json = JSON.parse(response.body)
+            expect(json["msg"]).to eq("User deleted!")
+        end
+        it "try to use deleted user's authentication" do
+            get "/users", params: {}, headers: @auth_header
+            expect(response).to have_http_status(401)
+        end
+    end
+
+
     describe 'DEL /users/:id user role to non-authorized id' do
         before do
             user = User.create(first_name: 'Teste', last_name: 'Teste', email: 'test@test.com', password: "password", password_confirmation: "password")
