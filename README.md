@@ -191,7 +191,7 @@ permitindo que ele tenha acesso apenas a certos campos e que só possa visualiza
 Caso esteja como `admin`, por outro lado, pode ver todos os dados dos usuários, assim como visualizar todos
 os usuários cadastrados (inclusive os marcados como deletados).
 
-![GET /users Result](/readme-images/result.png?raw=true)
+![GET /users Result](/readme-images/list_result.png?raw=true)
 
 - Permitir visualização de usuário
 
